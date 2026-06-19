@@ -1,0 +1,16 @@
+# gitleaks config (ITARS, CZID-259). Extends the default ruleset and allowlists
+# reviewed non-secret false positives so the hard-fail gate stays meaningful (any
+# real secret still fails the build).
+title = "cypherid-workflow-infra gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = """False positive: the boto3 SSM kwarg `WithDecryption=True` is a parameter flag,
+not a secret — the generic-api-key rule mis-flags it (lambdas/taxon-indexing-eviction/
+chalicelib/config.py). That code correctly FETCHES secrets from SSM Parameter Store at
+runtime; nothing is hardcoded. Real secrets committed elsewhere still fail the gate."""
+regexes = [
+  '''WithDecryption=True''',
+]
