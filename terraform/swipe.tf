@@ -2,7 +2,11 @@ module "swipe" {
   # TODO: Use chanzuckerberg/swipe once they merge in PR https://github.com/chanzuckerberg/swipe/pull/124
   #       But don't hold your breath. That repo hasn't been updated since April 2025
   # source = "github.com/chanzuckerberg/swipe?ref=v1.4.9"
-  source = "github.com/jsims-slower/swipe"
+  # Pinned to an immutable SHA (D6/CZID-240). 4622d7f = jsims-slower/swipe main
+  # as of 2026-05-28, 3 commits ahead of chanzuckerberg v1.4.9 (carries fixes not
+  # yet upstream). Unpinned, this floated to the fork's default branch =
+  # non-deterministic Step Functions/Batch infra + supply-chain risk.
+  source = "github.com/jsims-slower/swipe?ref=4622d7f2d1d051f97f44e0d70d85cc8dca06c70e"
   tags = {
     Name = "swipe"
   }
