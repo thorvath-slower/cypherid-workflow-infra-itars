@@ -2,18 +2,9 @@ name: Terraform Plan
 run-name: Terraform Plan in env ${{ inputs.environment || github.base_ref || github.ref_name }} branch ${{ github.base_ref || github.ref_name }} by ${{ github.actor }}
 
 on:
-  push:
-    branches:
-      - development
-      - staging
-      - main
-      - 'releases/**'
-  pull_request:
-    branches:
-      - development
-      - staging
-      - main
-      - 'releases/**'
+  # CZID-244 (ITARS detach): push/pull_request triggers disabled. This ran `terraform plan`
+  # via plan_call.yml's OIDC role czid-<env>-gh-actions-executor against a CZI account on every
+  # push/PR. Manual-only until repointed to an owner-controlled account.
   workflow_dispatch:
     inputs:
       environment:

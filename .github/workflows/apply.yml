@@ -19,7 +19,9 @@ env:
 jobs:
   apply:
     name: Apply
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # CZID-244 (ITARS detach): hard off unless explicitly enabled (OIDC apply against a CZI
+    # account). Set repo/environment variable ENABLE_CLOUD_CI=true only when wired to an owner account.
+    if: ${{ vars.ENABLE_CLOUD_CI == 'true' && github.event.workflow_run.conclusion == 'success' }}
     environment: 
       name: ${{ github.event.workflow_run.head_branch }}
     runs-on: ubuntu-latest

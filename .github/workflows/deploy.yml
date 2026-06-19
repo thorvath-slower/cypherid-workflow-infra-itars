@@ -21,6 +21,10 @@ permissions:
 
 jobs:
   DeployTerraform:
+    # CZID-244 (ITARS detach): hard off unless explicitly enabled. This assumes
+    # arn:aws:iam::941377154785:role/gha-seqtoid and runs `make deploy` (full apply).
+    # Set repo/environment variable ENABLE_CLOUD_CI=true only when wired to an owner account.
+    if: ${{ vars.ENABLE_CLOUD_CI == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
