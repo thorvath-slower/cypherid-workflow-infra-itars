@@ -1,0 +1,4 @@
+# Triaged Trivy exceptions (ITARS, CZID-259). Each entry should be a reviewed,
+# accepted finding with a reason + date. Trivy runs REPORT-ONLY (security.yml
+# exit-code: 0) on the first pass; populate this as the HIGH/CRITICAL backlog is
+# triaged, then ratchet security.yml's trivy exit-code to 1.
