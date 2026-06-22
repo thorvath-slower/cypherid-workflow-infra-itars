@@ -89,10 +89,14 @@ jobs:
       - uses: github/codeql-action/analyze@v3
 
   checkov:
-    name: checkov (IaC policy, report-only)
-    # Runs on every push/PR — the deep IaC policy scanner. soft_fail = report-only (the
-    # first-pass backlog is triaged in CZID-264). checkov scans local Terraform and does
-    # NOT download remote modules, so no SSH/module-resolution issues.
+    name: checkov (IaC policy, hard-fail on NEW)
+    # Runs on every push/PR — the deep IaC policy scanner. The first-pass backlog
+    # (inherited CZI AWS-hardening posture, out of scope to remediate under D3/no-apply)
+    # is accepted via .checkov.baseline (CZID-264); soft_fail=false means only NEW
+    # misconfigs vs the baseline hard-fail the build. checkov scans local Terraform and
+    # does NOT download remote modules, so no SSH/module-resolution issues. checkov_version
+    # is pinned to match the version the baseline was generated with (bump forward
+    # deliberately, then regenerate the baseline).
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -100,5 +104,7 @@ jobs:
         with:
           directory: .
           framework: terraform
-          soft_fail: true
+          checkov_version: 3.3.0
+          baseline: .checkov.baseline
+          soft_fail: false # hard-fail on findings new since the baseline
           output_format: cli
