@@ -56,17 +56,22 @@ jobs:
           exit-code: 0 # TODO(CZID-259): ratchet to 1 once the HIGH/CRITICAL backlog is triaged
 
   tflint:
-    name: tflint (report-only pending CZID-263)
+    name: tflint (report-only)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: terraform-linters/setup-tflint@v6
         with:
           tflint_version: latest
-      # Report-only for now: `tflint --recursive` hard-errors on a PRE-EXISTING broken
-      # module reference — terraform/idseq.tf declares ./modules/taxon-indexing-eviction
-      # which is missing from the repo (CZID-263). Ratchet back to hard-fail (drop
-      # continue-on-error) once that module reference is fixed.
+      # Report-only: `tflint --recursive` errors on the Chalice-lambda modules that
+      # terraform/idseq.tf references — ./modules/{taxon-indexing-eviction,
+      # pipeline-monitor-restarter,sfn-io-helper}. Those dirs are NOT missing/broken:
+      # they are generated at build time by `make package-lambdas` (chalice package ->
+      # terraform/modules/<name>/chalice.tf.json) and are intentionally uncommitted.
+      # This job only runs `checkout`, not `make package-lambdas`, so tflint can't
+      # resolve them. Not a real defect (CZID-263 closed as a false positive). To make
+      # this hard-fail, run `make package-lambdas` first (needs Docker + chalice) or
+      # scope tflint to the committed modules.
       - run: tflint --recursive --minimum-failure-severity=error --format compact
         continue-on-error: true
 
